@@ -1,0 +1,1651 @@
+================================================================================
+           DETAILED SENIOR DEVELOPER PROMPT - COMPREHENSIVE SPECIFICATION
+                    Premium Mobile Learning Application (PLA)
+================================================================================
+
+PROJECT TITLE: Dynamic Educational Learning Platform with Admin-Controlled Content
+PROJECT TYPE: Full-Stack Web/Mobile Application (Responsive)
+ENVIRONMENT: React/React Native + Node.js/Express + Supabase PostgreSQL
+TARGET DEVICES: Mobile (320px-768px) | Tablet (768px-1024px) | Desktop (1024px+)
+
+================================================================================
+PART 1: CURRENT UI/UX DESIGN ANALYSIS
+================================================================================
+
+1.1 VISUAL DESIGN OBSERVED
+─────────────────────────────────────────────────────────────────────────────
+
+COLOR PALETTE:
+- Primary Header: Deep Purple/Blue (#4a5b7a approximately)
+- Primary CTA Buttons: Emerald Green (#16a34a, #22c55e)
+- Accent Circles: Rainbow gradient (Red, Pink, Purple, Blue, Cyan, Teal, Green)
+- Card Background: White (#ffffff)
+- Secondary Background: Light Gray (#f3f4f6)
+- Text Primary: Dark Gray/Black (#1f2937)
+- Text Secondary: Gray (#6b7280)
+- Success/Correct: Green (#10b981)
+- Error/Locked: Dark Gray (#374151)
+
+TYPOGRAPHY:
+- Headers: Bold Sans-Serif (25-28px for main title)
+- Body Text: Regular Sans-Serif (16-18px)
+- Labels: Medium Sans-Serif (14-16px)
+- Captions: Light Sans-Serif (12-14px)
+- Font Family: Inter, Segoe UI, or system sans-serif
+
+LAYOUT & SPACING:
+- Card Border Radius: 12-16px
+- Button Border Radius: 8-12px
+- Padding: 16px-20px (cards), 12px-16px (elements)
+- Gap Between Cards: 16px
+- Margin Top/Bottom: 20px-24px
+- Mobile Padding: 12px-16px
+- Column Gap: 12px (mobile), 16px (tablet), 20px (desktop)
+
+SHADOW & DEPTH:
+- Light Shadow: 0 1px 3px rgba(0,0,0,0.1)
+- Medium Shadow: 0 4px 6px rgba(0,0,0,0.1)
+- Card Shadow: 0 2px 8px rgba(0,0,0,0.08)
+- Hover Shadow: 0 8px 16px rgba(0,0,0,0.12)
+
+1.2 COMPONENT BREAKDOWN
+─────────────────────────────────────────────────────────────────────────────
+
+[HOME SCREEN]
+├─ Header Bar (Fixed, 56px height)
+│  ├─ Left: Hamburger Menu Icon (24x24)
+│  ├─ Center: App Name (Dynamic from DB)
+│  ├─ Right Group
+│  │  ├─ Bell Icon (Notification)
+│  │  └─ Share Icon
+│  └─ Background: Primary Purple/Blue
+│
+├─ Content Area
+│  ├─ Category Grid
+│  │  └─ Cards (2-column on mobile, 3-column on tablet, varies on desktop)
+│  │     ├─ Colorful Illustration (Icon from DB)
+│  │     ├─ Category Title
+│  │     ├─ "New" Badge (if applicable)
+│  │     └─ Tap Action: Navigate to category
+│  │
+│  └─ Floating Action Buttons
+│     ├─ WhatsApp Floating Button (Green, bottom-right)
+│     └─ Telegram Floating Button (Blue, bottom-right)
+│
+└─ Bottom Navigation (Fixed, 56px height)
+   ├─ 4 Items (Home | Updates | Mock Test | Jobs)
+   └─ Active indicator below selected
+
+[COURSE/SUBJECT LISTING]
+├─ Header with Back Arrow
+├─ Language Toggle Buttons
+│  ├─ Hindi Medium (Gray - inactive)
+│  ├─ English Medium (Green - active)
+│  └─ Toggle via button click
+│
+└─ Subject/Set Cards
+   ├─ Numbered Circle Badge (1, 2, 3...)
+   │  └─ Color gradient per number
+   ├─ Title (in selected language)
+   ├─ Lock Icon (if locked)
+   └─ Tap Action: Open set or show unlock dialog
+
+[UNLOCK DIALOG]
+├─ Modal Overlay (Dimmed background)
+├─ Title: "Unlock Content"
+├─ Message: "Watch a short video to unlock this content."
+├─ Buttons
+│  ├─ CANCEL (Secondary, Gray background)
+│  └─ WATCH NOW (Primary, Green background)
+└─ Border Radius: 12px
+   Padding: 24px
+
+[QUIZ INTERFACE]
+├─ Header: Set Title + Back Arrow
+├─ Question Counter: "Question 1 of 20" (Pill shape, gray background)
+├─ Progress Bar (Green, showing progress)
+├─ Report Button (Top-right corner, secondary button)
+│
+├─ Question Card
+│  ├─ Question Text (16-18px, dark gray)
+│  └─ Padding: 16px all sides
+│
+├─ Option Cards (A, B, C, D)
+│  ├─ Each option in separate card
+│  ├─ Letter Badge (A, B, C, D) - Circle (36px diameter)
+│  ├─ Option Text
+│  ├─ Border: 2px (default: #e5e7eb)
+│  ├─ Border Radius: 8px
+│  ├─ Padding: 16px
+│  ├─ Margin Bottom: 12px
+│  ├─ Interactive: Select on tap
+│  ├─ Selected State: 
+│  │  └─ Border Color: Primary Blue/Purple (2px)
+│  │  └─ Background: Slight tint of primary color
+│  └─ Correct State:
+│     └─ Border Color: Green (#10b981)
+│     └─ Background: Light green tint
+│
+├─ Explanation Section (Shows after selection)
+│  ├─ Background: Light Green (#ecfdf5)
+│  ├─ Border-Left: 4px Solid Green
+│  ├─ Padding: 16px
+│  ├─ Border Radius: 8px
+│  ├─ Icon: Check mark
+│  ├─ Title: "Explanation"
+│  ├─ Subtitle: Explanation text
+│  ├─ Correct Answer: Bold green text
+│  └─ Margin Top: 16px
+│
+├─ Question Navigator Panel
+│  ├─ Container with border: 2px solid #22c55e
+│  ├─ 3-Column Grid (mobile), 4-5 columns (tablet/desktop)
+│  ├─ Each Question Button
+│  │  ├─ Size: 48px x 48px (mobile), 56px (tablet)
+│  │  ├─ Border Radius: 8px
+│  │  ├─ Text: Q1, Q2, Q3...
+│  │  ├─ States:
+│  │  │  ├─ Unanswered: White background, gray text
+│  │  │  ├─ Answered (Incorrect): Red/Pink circle
+│  │  │  ├─ Answered (Correct): Green circle
+│  │  │  └─ Current: Green background with border
+│  │  └─ Tap: Jump to question
+│  └─ Padding: 16px
+│     Border Radius: 12px
+│
+└─ Next Button
+   ├─ Size: 100% width on mobile, auto on desktop
+   ├─ Height: 48px
+   ├─ Border Radius: 12px
+   ├─ Background: Green (#22c55e)
+   ├─ Text: White, bold
+   ├─ Margin Top: 20px
+   └─ Bottom Padding: 16px (safe area consideration)
+
+[SIDEBAR MENU]
+├─ Logo/App Icon (Top)
+├─ Menu Items (Vertical List)
+│  ├─ Home
+│  ├─ Share App
+│  ├─ Rate App (enable/disable from admin)
+│  ├─ ──────────── (Divider)
+│  ├─ Privacy Policy
+│  ├─ About Us
+│  ├─ Terms & Conditions
+│  ├─ Disclaimer
+│  └─ Contact Us
+├─ Each Item
+│  ├─ Icon + Label
+│  ├─ Padding: 16px
+│  ├─ Hover Background: Light gray overlay
+│  └─ Active Indicator (left border or highlight)
+└─ Overlay: Dimmed background when open (mobile)
+
+================================================================================
+PART 2: DESIGN SYSTEM & COMPONENT STANDARDS
+================================================================================
+
+2.1 RESPONSIVE BREAKPOINTS
+─────────────────────────────────────────────────────────────────────────────
+
+MOBILE:      320px - 640px (Primary target)
+TABLET:      641px - 1024px (iPad, Tab)
+DESKTOP:     1025px+ (Laptops, PCs)
+
+Grid System:
+- Mobile:   1-2 columns (12px gap)
+- Tablet:   2-3 columns (16px gap)
+- Desktop:  3-4 columns (20px gap)
+
+2.2 COMPONENT LIBRARY STANDARDS
+─────────────────────────────────────────────────────────────────────────────
+
+BUTTONS:
+├─ Primary Button
+│  ├─ Background: #22c55e
+│  ├─ Color: White
+│  ├─ Padding: 12px 24px (mobile), 14px 32px (desktop)
+│  ├─ Border Radius: 8px-12px
+│  ├─ Font Size: 16px (bold)
+│  ├─ Hover: #16a34a (darker green)
+│  ├─ Active: #15803d (even darker)
+│  ├─ Disabled: #d1d5db (gray)
+│  └─ Transition: 200ms ease
+│
+├─ Secondary Button
+│  ├─ Background: #f3f4f6 (light gray)
+│  ├─ Color: #374151 (dark gray)
+│  ├─ Border: 1px #e5e7eb
+│  ├─ Padding: 12px 24px
+│  ├─ Hover: #e5e7eb
+│  └─ Font Weight: 600
+│
+└─ Icon Button
+   ├─ Size: 40px x 40px (min)
+   ├─ Icon Size: 24px
+   ├─ Border Radius: 8px
+   ├─ Hover: Background tint
+   └─ Ripple Effect (optional, on tap)
+
+CARDS:
+├─ Standard Card
+│  ├─ Background: White
+│  ├─ Border Radius: 12px-16px
+│  ├─ Padding: 16px
+│  ├─ Shadow: 0 2px 8px rgba(0,0,0,0.08)
+│  ├─ Hover Shadow: 0 8px 16px rgba(0,0,0,0.12)
+│  ├─ Transition: 300ms ease
+│  └─ Tap Feedback: Scale 0.98
+│
+├─ Category Card
+│  ├─ Image/Icon: 64x64px
+│  ├─ Title: Bold, centered, 16px
+│  ├─ Badge (if new): Absolute top-right, red with white text
+│  └─ Aspect Ratio: Roughly square with padding
+│
+└─ Set/Subject Card
+   ├─ Numbered Badge: 48px circle on left
+   ├─ Title: 16px, left-aligned
+   ├─ Lock Icon: Right-aligned (24px)
+   └─ Height: 72px (min)
+
+BADGES & TAGS:
+├─ Numbered Badge (for sets)
+│  ├─ Size: 48px diameter
+│  ├─ Shape: Circle
+│  ├─ Text: Bold white, centered
+│  ├─ Colors: Gradient-mapped per number (Red, Pink, Purple, Blue, etc.)
+│  └─ Font Size: 16px
+│
+├─ Status Badge
+│  ├─ Text Badge: 12px padding, 8px vertical
+│  ├─ Border Radius: 4px-6px
+│  ├─ Status Colors:
+│  │  ├─ New: Red background, white text
+│  │  ├─ Active: Green background, white text
+│  │  ├─ Coming Soon: Orange/Yellow
+│  │  └─ Expired: Gray
+│  └─ Font Weight: 600, Font Size: 12px
+│
+└─ Question Status Badge (in navigator)
+   ├─ Circle (48px)
+   ├─ Border: 2px solid (varies by state)
+   ├─ States:
+   │  ├─ Unanswered: Gray border, white background
+   │  ├─ Answered Wrong: Red circle
+   │  ├─ Answered Correct: Green circle
+   │  └─ Current Question: Green border, green background
+   └─ Font Size: 14px bold
+
+INPUT FIELDS:
+├─ Standard Input
+│  ├─ Height: 44px (mobile), 48px (desktop)
+│  ├─ Border: 1px #e5e7eb
+│  ├─ Border Radius: 8px
+│  ├─ Padding: 12px 16px
+│  ├─ Focus Border Color: Primary color
+│  ├─ Focus Shadow: 0 0 0 3px rgba(primaryColor, 0.1)
+│  ├─ Font Size: 16px (prevents zoom on iOS)
+│  └─ Transition: 200ms ease
+│
+├─ Toggle Button (Language Select)
+│  ├─ Display: 2 buttons side-by-side
+│  ├─ Selected: Green background, white text
+│  ├─ Unselected: Gray background, dark text
+│  ├─ Width: 50% each
+│  ├─ Height: 44px
+│  ├─ Border Radius: 8px
+│  ├─ Margin: 12px
+│  └─ Tap Animation: Scale 0.95
+│
+└─ Dialog/Modal
+   ├─ Background Overlay: rgba(0,0,0,0.4)
+   ├─ Modal Max Width: 600px
+   ├─ Border Radius: 12px
+   ├─ Padding: 24px
+   ├─ Shadow: 0 20px 25px rgba(0,0,0,0.15)
+   ├─ Animation: Fade-in + Scale-up (300ms)
+   └─ Close Button: Top-right corner
+
+PROGRESS INDICATORS:
+├─ Progress Bar
+│  ├─ Height: 4px
+│  ├─ Background: #e5e7eb
+│  ├─ Fill Color: #22c55e
+│  ├─ Border Radius: 2px
+│  ├─ Animation: Smooth transition
+│  └─ Width: 100%
+│
+├─ Question Counter
+│  ├─ Shape: Pill (border-radius: 20px)
+│  ├─ Background: #f3f4f6
+│  ├─ Padding: 8px 16px
+│  ├─ Font Size: 14px bold
+│  ├─ Color: #6b7280
+│  └─ Display: Inline-block
+│
+└─ Skeleton Loader
+   ├─ Background: #f3f4f6
+   ├─ Animation: Pulse (opacity 0.6 - 1)
+   ├─ Border Radius: 8px
+   ├─ Duration: 1.5s
+   └─ Used for: Lists, cards, images loading
+
+BOTTOM NAVIGATION:
+├─ Height: 56px (mobile), 64px (tablet)
+├─ Background: White with shadow
+├─ Border Top: 1px #e5e7eb
+├─ Items: 4-5 evenly distributed
+├─ Icon Size: 24px
+├─ Label Font Size: 12px
+├─ Active Color: Primary color (#4a5b7a or #22c55e)
+├─ Inactive Color: #9ca3af
+└─ Safe Area Bottom Padding: 8px (for notch devices)
+
+HEADER/TOP BAR:
+├─ Height: 56px
+├─ Background: Primary purple/blue (#4a5b7a)
+├─ Text Color: White
+├─ Padding: 8px 12px
+├─ Shadow: 0 2px 4px rgba(0,0,0,0.1)
+├─ Status Bar Space: Auto-handled by system
+├─ Icons: 24x24px, white
+├─ Title Font Size: 18px bold
+├─ Safe Area Top Padding: 8px (for notch devices)
+└─ Z-index: 100
+
+================================================================================
+PART 3: TECHNICAL ARCHITECTURE & DATABASE SCHEMA
+================================================================================
+
+3.1 TECHNOLOGY STACK
+─────────────────────────────────────────────────────────────────────────────
+
+FRONTEND:
+├─ Framework: React 18+
+├─ Styling: Tailwind CSS v3+ (or styled-components)
+├─ State Management: Zustand or Context API
+├─ HTTP Client: Axios or Fetch API
+├─ Responsive Design: Mobile-first approach
+├─ Icons: React Icons or Custom SVG
+├─ Animation: Framer Motion (optional)
+├─ Form Handling: React Hook Form
+├─ Validation: Zod or Yup
+└─ Testing: Vitest + React Testing Library
+
+MOBILE:
+├─ Framework: React Native or Expo
+├─ Navigation: React Navigation
+├─ State Management: Zustand or Redux
+├─ UI Kit: React Native Paper or custom
+├─ Platform Target: iOS 13+ / Android 8+
+└─ Build: EAS Build (Expo)
+
+BACKEND:
+├─ Runtime: Node.js 18+
+├─ Framework: Express.js or FastAPI
+├─ Database: Supabase (PostgreSQL)
+├─ Authentication: Supabase Auth + JWT
+├─ API: RESTful with CORS
+├─ Middleware: CORS, Rate Limiting, Error Handling
+├─ Logging: Winston or Pino
+└─ Deployment: Vercel or Railway
+
+DATABASE:
+├─ Primary: Supabase (PostgreSQL)
+├─ Connection: Supabase JS Client
+├─ Real-time: Supabase Real-time subscriptions
+├─ Storage: Supabase Storage (for files/PDFs)
+├─ RLS Policies: Row-Level Security enabled
+└─ Backups: Automated by Supabase
+
+3.2 DATABASE SCHEMA (COMPLETE)
+─────────────────────────────────────────────────────────────────────────────
+
+[TABLE: site_settings]
+├─ id (UUID, PK)
+├─ site_name (VARCHAR)
+├─ logo_url (VARCHAR)
+├─ favicon_url (VARCHAR)
+├─ meta_title (VARCHAR)
+├─ meta_description (TEXT)
+├─ contact_email (VARCHAR)
+├─ contact_phone (VARCHAR)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+
+[TABLE: categories]
+├─ id (UUID, PK)
+├─ title (VARCHAR, NOT NULL)
+├─ description (TEXT)
+├─ icon_url (VARCHAR)
+├─ icon_type (ENUM: 'image'|'emoji'|'svg')
+├─ category_type (ENUM: 'mcq'|'syllabus'|'updates'|'daily_test'|'daily_result'|'previous_papers'|'mock_test', NOT NULL)
+├─ color_code (VARCHAR) [for badge color]
+├─ display_order (INTEGER, default: 0)
+├─ is_active (BOOLEAN, default: true)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+   INDEX: (category_type, display_order)
+
+[TABLE: mcq_types]
+├─ id (UUID, PK)
+├─ name (VARCHAR, NOT NULL, UNIQUE)
+├─ description (TEXT)
+├─ is_active (BOOLEAN, default: true)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+
+[TABLE: courses]
+├─ id (UUID, PK)
+├─ category_id (UUID, FK → categories.id)
+├─ name (VARCHAR, NOT NULL)
+├─ description (TEXT)
+├─ image_url (VARCHAR)
+├─ course_code (VARCHAR, UNIQUE)
+├─ display_order (INTEGER, default: 0)
+├─ is_active (BOOLEAN, default: true)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+   INDEX: (category_id, display_order)
+   CONSTRAINT: FOREIGN KEY (category_id) → categories(id) ON DELETE CASCADE
+
+[TABLE: subjects]
+├─ id (UUID, PK)
+├─ course_id (UUID, FK → courses.id)
+├─ name (VARCHAR, NOT NULL)
+├─ description (TEXT)
+├─ subject_code (VARCHAR)
+├─ icon_url (VARCHAR)
+├─ display_order (INTEGER, default: 0)
+├─ is_active (BOOLEAN, default: true)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+   INDEX: (course_id, display_order)
+   CONSTRAINT: FOREIGN KEY (course_id) → courses(id) ON DELETE CASCADE
+
+[TABLE: sets]
+├─ id (UUID, PK)
+├─ subject_id (UUID, FK → subjects.id)
+├─ mcq_type_id (UUID, FK → mcq_types.id, NULLABLE)
+├─ title (VARCHAR, NOT NULL)
+├─ description (TEXT)
+├─ total_questions (INTEGER)
+├─ duration_minutes (INTEGER, NULLABLE)
+├─ difficulty (ENUM: 'easy'|'medium'|'hard', default: 'medium')
+├─ is_locked (BOOLEAN, default: false)
+├─ unlock_type (ENUM: 'free'|'ad_based'|'premium', default: 'free')
+├─ display_order (INTEGER, default: 0)
+├─ is_active (BOOLEAN, default: true)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+   INDEX: (subject_id, display_order)
+   CONSTRAINT: FOREIGN KEY (subject_id) → subjects(id) ON DELETE CASCADE
+   CONSTRAINT: FOREIGN KEY (mcq_type_id) → mcq_types(id) ON DELETE SET NULL
+
+[TABLE: questions]
+├─ id (UUID, PK)
+├─ set_id (UUID, FK → sets.id)
+├─ question_text (TEXT, NOT NULL)
+├─ question_type (ENUM: 'mcq'|'true_false'|'fill_blank', default: 'mcq')
+├─ option_a (TEXT)
+├─ option_b (TEXT)
+├─ option_c (TEXT)
+├─ option_d (TEXT)
+├─ correct_answer (VARCHAR, NOT NULL) [A, B, C, D, True/False]
+├─ explanation (TEXT)
+├─ explanation_image_url (VARCHAR, NULLABLE)
+├─ difficulty (ENUM: 'easy'|'medium'|'hard')
+├─ marks (INTEGER, default: 1)
+├─ negative_marks (INTEGER, default: 0)
+├─ display_order (INTEGER, default: 0)
+├─ is_active (BOOLEAN, default: true)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+   INDEX: (set_id, display_order)
+   CONSTRAINT: FOREIGN KEY (set_id) → sets(id) ON DELETE CASCADE
+
+[TABLE: syllabus]
+├─ id (UUID, PK)
+├─ course_id (UUID, FK → courses.id)
+├─ title (VARCHAR, NOT NULL)
+├─ description (TEXT)
+├─ file_type (ENUM: 'pdf'|'link'|'video', default: 'pdf')
+├─ file_url (VARCHAR, NOT NULL)
+├─ external_link (VARCHAR, NULLABLE)
+├─ is_downloadable (BOOLEAN, default: true)
+├─ badge_color (VARCHAR, NULLABLE)
+├─ badge_text (VARCHAR, NULLABLE)
+├─ display_order (INTEGER, default: 0)
+├─ is_active (BOOLEAN, default: true)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+   INDEX: (course_id, display_order)
+   CONSTRAINT: FOREIGN KEY (course_id) → courses(id) ON DELETE CASCADE
+
+[TABLE: update_sections]
+├─ id (UUID, PK)
+├─ title (VARCHAR, NOT NULL)
+├─ icon_url (VARCHAR)
+├─ display_order (INTEGER, default: 0)
+├─ is_active (BOOLEAN, default: true)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+
+[TABLE: update_items]
+├─ id (UUID, PK)
+├─ section_id (UUID, FK → update_sections.id)
+├─ title (VARCHAR, NOT NULL)
+├─ subtitle (TEXT, NULLABLE)
+├─ description (TEXT, NULLABLE)
+├─ status (ENUM: 'open'|'coming_soon'|'expired'|'released', default: 'open')
+├─ published_date (DATE)
+├─ expiry_date (DATE, NULLABLE)
+├─ image_url (VARCHAR, NULLABLE)
+├─ display_order (INTEGER, default: 0)
+├─ is_active (BOOLEAN, default: true)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+   INDEX: (section_id, published_date)
+   CONSTRAINT: FOREIGN KEY (section_id) → update_sections(id) ON DELETE CASCADE
+
+[TABLE: update_buttons]
+├─ id (UUID, PK)
+├─ item_id (UUID, FK → update_items.id)
+├─ label (VARCHAR, NOT NULL)
+├─ button_type (ENUM: 'link'|'action'|'modal', default: 'link')
+├─ url (VARCHAR, NULLABLE)
+├─ action (VARCHAR, NULLABLE)
+├─ display_order (INTEGER, default: 0)
+├─ is_active (BOOLEAN, default: true)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+   CONSTRAINT: FOREIGN KEY (item_id) → update_items(id) ON DELETE CASCADE
+
+[TABLE: daily_tests]
+├─ id (UUID, PK)
+├─ course_id (UUID, FK → courses.id)
+├─ test_date (DATE, NOT NULL)
+├─ language (ENUM: 'hindi'|'english', default: 'english')
+├─ total_questions (INTEGER)
+├─ duration_minutes (INTEGER)
+├─ is_locked (BOOLEAN, default: true)
+├─ unlock_type (ENUM: 'free'|'ad_based', default: 'ad_based')
+├─ allow_retake (BOOLEAN, default: false)
+├─ is_active (BOOLEAN, default: true)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+   INDEX: (course_id, test_date)
+   CONSTRAINT: FOREIGN KEY (course_id) → courses(id) ON DELETE CASCADE
+
+[TABLE: daily_questions]
+├─ id (UUID, PK)
+├─ test_id (UUID, FK → daily_tests.id)
+├─ question_text (TEXT, NOT NULL)
+├─ option_a (TEXT)
+├─ option_b (TEXT)
+├─ option_c (TEXT)
+├─ option_d (TEXT)
+├─ correct_answer (VARCHAR, NOT NULL)
+├─ explanation (TEXT)
+├─ marks (INTEGER, default: 1)
+├─ negative_marks (INTEGER, default: 0)
+├─ display_order (INTEGER, default: 0)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+   INDEX: (test_id, display_order)
+   CONSTRAINT: FOREIGN KEY (test_id) → daily_tests(id) ON DELETE CASCADE
+
+[TABLE: user_profiles]
+├─ id (UUID, PK) [matches auth.users.id]
+├─ email (VARCHAR, UNIQUE)
+├─ full_name (VARCHAR)
+├─ phone (VARCHAR)
+├─ state (VARCHAR)
+├─ district (VARCHAR)
+├─ course_id (UUID, FK → courses.id, NULLABLE)
+├─ preferred_language (ENUM: 'hindi'|'english', default: 'english')
+├─ total_tests_taken (INTEGER, default: 0)
+├─ total_score (INTEGER, default: 0)
+├─ profile_image_url (VARCHAR, NULLABLE)
+├─ is_active (BOOLEAN, default: true)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+   CONSTRAINT: FOREIGN KEY (course_id) → courses(id) ON DELETE SET NULL
+
+[TABLE: results]
+├─ id (UUID, PK)
+├─ user_id (UUID, FK → user_profiles.id)
+├─ test_id (UUID, FK → daily_tests.id OR sets.id)
+├─ test_type (ENUM: 'daily_test'|'practice_set'|'mock_test')
+├─ course_id (UUID, FK → courses.id)
+├─ total_questions (INTEGER)
+├─ correct_answers (INTEGER, default: 0)
+├─ wrong_answers (INTEGER, default: 0)
+├─ skipped_answers (INTEGER, default: 0)
+├─ total_score (INTEGER, default: 0)
+├─ percentage (DECIMAL(5,2), default: 0)
+├─ time_taken_seconds (INTEGER)
+├─ rank (INTEGER, NULLABLE) [computed via trigger or query]
+├─ attempt_number (INTEGER, default: 1)
+├─ status (ENUM: 'completed'|'incomplete'|'submitted', default: 'completed')
+├─ test_date (DATE, NOT NULL)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+   INDEX: (user_id, test_date)
+   INDEX: (test_id, test_type)
+   INDEX: (course_id, test_date)
+   CONSTRAINT: FOREIGN KEY (user_id) → user_profiles(id) ON DELETE CASCADE
+
+[TABLE: previous_papers]
+├─ id (UUID, PK)
+├─ course_id (UUID, FK → courses.id)
+├─ exam_year (INTEGER)
+├─ exam_month (VARCHAR, NULLABLE)
+├─ title (VARCHAR, NOT NULL)
+├─ description (TEXT, NULLABLE)
+├─ file_url (VARCHAR, NULLABLE)
+├─ external_link (VARCHAR, NULLABLE)
+├─ is_downloadable (BOOLEAN, default: true)
+├─ subject_id (UUID, FK → subjects.id, NULLABLE)
+├─ display_order (INTEGER, default: 0)
+├─ is_active (BOOLEAN, default: true)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+   INDEX: (course_id, exam_year)
+   CONSTRAINT: FOREIGN KEY (course_id) → courses(id) ON DELETE CASCADE
+   CONSTRAINT: FOREIGN KEY (subject_id) → subjects(id) ON DELETE SET NULL
+
+[TABLE: mock_tests]
+├─ id (UUID, PK)
+├─ course_id (UUID, FK → courses.id)
+├─ title (VARCHAR, NOT NULL)
+├─ description (TEXT, NULLABLE)
+├─ total_questions (INTEGER)
+├─ duration_minutes (INTEGER)
+├─ full_mock (BOOLEAN, default: true)
+├─ shuffle_questions (BOOLEAN, default: true)
+├─ show_answers_after (BOOLEAN, default: true)
+├─ allow_retake (BOOLEAN, default: true)
+├─ display_order (INTEGER, default: 0)
+├─ is_active (BOOLEAN, default: true)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+   INDEX: (course_id, display_order)
+   CONSTRAINT: FOREIGN KEY (course_id) → courses(id) ON DELETE CASCADE
+
+[TABLE: mock_questions]
+├─ id (UUID, PK)
+├─ mock_test_id (UUID, FK → mock_tests.id)
+├─ question_text (TEXT, NOT NULL)
+├─ option_a (TEXT)
+├─ option_b (TEXT)
+├─ option_c (TEXT)
+├─ option_d (TEXT)
+├─ correct_answer (VARCHAR, NOT NULL)
+├─ explanation (TEXT)
+├─ marks (INTEGER, default: 1)
+├─ negative_marks (INTEGER, default: 0)
+├─ display_order (INTEGER, default: 0)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+   INDEX: (mock_test_id, display_order)
+   CONSTRAINT: FOREIGN KEY (mock_test_id) → mock_tests(id) ON DELETE CASCADE
+
+[TABLE: notifications]
+├─ id (UUID, PK)
+├─ title (VARCHAR, NOT NULL)
+├─ message (TEXT, NOT NULL)
+├─ description (TEXT, NULLABLE)
+├─ notification_type (ENUM: 'update'|'announcement'|'reminder'|'info')
+├─ link (VARCHAR, NULLABLE)
+├─ icon_url (VARCHAR, NULLABLE)
+├─ target_audience (VARCHAR, NULLABLE) [JSON: {"course_ids": [...], "user_ids": [...]}]
+├─ is_read_by_user (BOOLEAN, default: false) [tracked per user]
+├─ priority (ENUM: 'low'|'medium'|'high', default: 'medium')
+├─ is_active (BOOLEAN, default: true)
+├─ published_date (TIMESTAMP, default: now())
+├─ expiry_date (TIMESTAMP, NULLABLE)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+   INDEX: (published_date DESC)
+
+[TABLE: notification_reads]
+├─ id (UUID, PK)
+├─ notification_id (UUID, FK → notifications.id)
+├─ user_id (UUID, FK → user_profiles.id)
+├─ is_read (BOOLEAN, default: false)
+├─ read_at (TIMESTAMP, NULLABLE)
+├─ created_at (TIMESTAMP, default: now())
+└─ UNIQUE(notification_id, user_id)
+   CONSTRAINT: FOREIGN KEY (notification_id) → notifications(id) ON DELETE CASCADE
+   CONSTRAINT: FOREIGN KEY (user_id) → user_profiles(id) ON DELETE CASCADE
+
+[TABLE: ads_settings]
+├─ id (UUID, PK)
+├─ publisher_id (VARCHAR, NOT NULL, UNIQUE)
+├─ auto_ads_enabled (BOOLEAN, default: true)
+├─ manual_ads_enabled (BOOLEAN, default: true)
+├─ ads_txt_content (TEXT)
+├─ ad_network (VARCHAR) ['google_adsense'|'admob'|'custom']
+├─ revenue_share_percentage (DECIMAL(5,2), default: 80)
+├─ is_active (BOOLEAN, default: true)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+
+[TABLE: ad_placements]
+├─ id (UUID, PK)
+├─ placement_name (VARCHAR, NOT NULL, UNIQUE)
+├─ location (VARCHAR) ['home_banner'|'set_list'|'after_question'|'result_page']
+├─ ad_unit_id (VARCHAR, NOT NULL)
+├─ is_active (BOOLEAN, default: true)
+├─ created_at (TIMESTAMP, default: now())
+└─ updated_at (TIMESTAMP, default: now())
+
+================================================================================
+PART 4: FEATURE SPECIFICATIONS & WORKFLOWS
+================================================================================
+
+4.1 HOME SCREEN FLOW
+─────────────────────────────────────────────────────────────────────────────
+
+USER ACTION: Opens app → HOME SCREEN loads
+
+DISPLAY:
+1. Fetch all active categories from DB (category_type, display_order)
+2. Map categories to grid layout
+   - Mobile: 2-column grid
+   - Tablet: 3-column grid
+   - Desktop: 4-column grid
+3. Each category card displays:
+   - Icon from DB (icon_url)
+   - Title from DB (title)
+   - "New" badge if category recently added (conditional)
+   - Tap listener: Navigate to category detail
+
+DATA FETCH:
+   SELECT id, title, icon_url, category_type, color_code 
+   FROM categories 
+   WHERE is_active = true 
+   ORDER BY display_order ASC;
+
+USER INTERACTION:
+├─ Tap Category Card
+│  └─ Navigate to: /categories/{categoryId}/detail
+│
+├─ Tap Menu Icon (Hamburger)
+│  └─ Open Sidebar Menu (overlay on mobile, permanent on large screens)
+│
+├─ Tap Notification Icon
+│  └─ Navigate to: /notifications
+│
+├─ Tap Share Button
+│  └─ Open native share dialog (Web Share API or fallback)
+│
+├─ Tap Bottom Nav Item
+│  └─ Navigate to respective screen
+│
+└─ Pull to Refresh
+   └─ Reload categories from DB
+
+4.2 MCQ SYSTEM FLOW
+─────────────────────────────────────────────────────────────────────────────
+
+FLOW: Home → Category → Course → Subject → Set → Quiz → Result
+
+STEP 1: Select Course
+   DATA: SELECT id, name, image_url, description 
+         FROM courses 
+         WHERE category_id = {categoryId} 
+         ORDER BY display_order ASC;
+   
+   DISPLAY: Grid of course cards
+
+STEP 2: Select Subject
+   DATA: SELECT id, name, icon_url, subject_code 
+         FROM subjects 
+         WHERE course_id = {courseId} 
+         ORDER BY display_order ASC;
+   
+   DISPLAY: Grid or list of subject cards
+
+STEP 3: Select Set (with Language Toggle)
+   
+   LANGUAGE BUTTONS: Two toggle buttons
+   ├─ Button 1: "हिन्दी माध्यम" (Hindi Medium)
+   ├─ Button 2: "English Medium"
+   └─ State: Selected button has green background, white text
+             Unselected button has gray background, dark text
+   
+   DATA: SELECT id, title, total_questions, difficulty, is_locked, unlock_type 
+         FROM sets 
+         WHERE subject_id = {subjectId} 
+         ORDER BY display_order ASC;
+   
+   DISPLAY: List of set cards with:
+   ├─ Numbered badge (1, 2, 3...) with color gradient
+   ├─ Set title
+   ├─ Lock icon (if is_locked = true)
+   └─ Tap listener
+
+STEP 4: Check Unlock Status & Fetch Questions
+   
+   IF is_locked = true:
+   ├─ Check unlock_type
+   │  ├─ IF 'ad_based':
+   │  │  └─ Show unlock dialog with "WATCH NOW" button
+   │  │     ON CLICK: Play ad, mark as unlocked in session
+   │  └─ IF 'premium':
+   │     └─ Show "Buy Premium" dialog
+   │
+   ELSE IF is_locked = false OR unlocked in session:
+   ├─ Fetch questions
+   │  ├─ DATA: SELECT id, question_text, option_a, option_b, option_c, option_d, 
+   │  │         correct_answer, explanation, display_order 
+   │  │         FROM questions 
+   │  │         WHERE set_id = {setId} 
+   │  │         ORDER BY display_order ASC;
+   │  └─ Store in state: [questions array]
+   │
+   └─ Navigate to Quiz Screen
+
+STEP 5: Quiz Interface
+   
+   LAYOUT:
+   ├─ Header: Set title + Back button
+   ├─ Question Counter: "Question 1 of 20" (pill shape)
+   ├─ Progress Bar: Green bar showing progress
+   ├─ Report Button: Top-right (optional)
+   │
+   ├─ Main Content
+   │  ├─ Question Card (white background, padding)
+   │  ├─ 4 Option Cards (A, B, C, D)
+   │  │  ├─ Display option text
+   │  │  ├─ Show selection state (border highlight on tap)
+   │  │  └─ Disable until answered (or allow free selection then lock)
+   │  │
+   │  └─ Explanation Section (appears after selection)
+   │     ├─ Green background box
+   │     ├─ Left border: 4px solid green
+   │     ├─ Title: "Explanation"
+   │     ├─ Body: explanation_text
+   │     └─ Correct Answer: Bold, green
+   │
+   ├─ Question Navigator Panel
+   │  ├─ Grid of Q1-Q20 buttons (3 columns mobile, 4-5 desktop)
+   │  ├─ States:
+   │  │  ├─ Unanswered: White background, gray text
+   │  │  ├─ Answered (Wrong): Red circle
+   │  │  ├─ Answered (Correct): Green circle
+   │  │  └─ Current: Green border, highlight
+   │  └─ Tap: Jump to question
+   │
+   └─ Next Button (bottom, green, full-width mobile)
+      └─ ON CLICK: Move to next question OR show result if last question
+
+STEP 6: Result Screen
+   
+   CALCULATE:
+   ├─ Total questions
+   ├─ Correct answers
+   ├─ Wrong answers
+   ├─ Skipped answers
+   ├─ Total score = (correct × marks) - (wrong × negative_marks)
+   ├─ Percentage = (total_score / (total_questions × marks)) × 100
+   ├─ Time taken (from session timer)
+   └─ Rank (query: count all results with higher score in same set+date)
+   
+   DISPLAY:
+   ├─ Congratulations message (if percentage > 60%)
+   ├─ Score card: Big circle showing percentage or score
+   ├─ Stats breakdown:
+   │  ├─ Correct: Green
+   │  ├─ Wrong: Red
+   │  ├─ Skipped: Gray
+   │  ├─ Time Taken: Clock icon
+   │  └─ Rank: Trophy icon (if available)
+   │
+   ├─ Option Buttons:
+   │  ├─ "Review Answers" → Show all questions with marked answers
+   │  ├─ "Share Score" → Native share or screenshot
+   │  ├─ "Home" → Back to home
+   │  └─ "Try Again" (if allow_retake = true) → Restart quiz
+   │
+   └─ SAVE RESULT to results table
+      INSERT INTO results (user_id, test_id, test_type, course_id, ...) VALUES (...);
+
+4.3 DAILY TEST FLOW
+─────────────────────────────────────────────────────────────────────────────
+
+USER JOURNEY: Home → Daily Test Category → Form → Test List → Quiz → Result
+
+STEP 1: User Registration/Form (First time only)
+   
+   FORM FIELDS:
+   ├─ Name (text input, required)
+   ├─ Course (dropdown, fetched from courses table, required)
+   ├─ State (dropdown or search, required)
+   ├─ District (dropdown based on state, required)
+   ├─ Language (toggle: Hindi / English)
+   └─ Submit Button: "Start Test"
+   
+   ON SUBMIT:
+   ├─ Validate form
+   ├─ Store in user_profiles table (or session)
+   ├─ Show test list for selected course
+
+STEP 2: Select Daily Test
+   
+   DATA: SELECT id, test_date, total_questions, duration_minutes, is_locked, language
+         FROM daily_tests
+         WHERE course_id = {courseId}
+         AND is_active = true
+         ORDER BY test_date DESC;
+   
+   DISPLAY: List of daily tests (by date)
+   ├─ Test date
+   ├─ Question count
+   ├─ Duration
+   ├─ Language label (Hindi/English)
+   ├─ Lock icon (if is_locked = true)
+   └─ Tap to start test
+
+STEP 3: Take Test (Same as MCQ, but time-bound)
+   
+   FEATURES:
+   ├─ Timer (countdown from duration_minutes)
+   ├─ Auto-submit when time expires
+   ├─ Warning at 5min, 1min remaining
+   ├─ Question navigator (same as MCQ)
+   └─ Disable back button after starting (prevent cheating)
+
+STEP 4: Result Screen (Same as MCQ)
+   
+   ADDITIONAL INFO:
+   ├─ Leaderboard rank (position in results for same test_date + course_id)
+   ├─ Your score vs average score
+   └─ Compare with other students (optional)
+
+4.4 DAILY TEST RESULT (LEADERBOARD) FLOW
+─────────────────────────────────────────────────────────────────────────────
+
+DISPLAY: Home → Daily Result Category → Course → Leaderboard
+
+LEADERBOARD QUERY:
+   SELECT 
+       ROW_NUMBER() OVER (ORDER BY total_score DESC, time_taken_seconds ASC) as rank,
+       user_profiles.full_name,
+       results.total_score,
+       results.percentage,
+       results.time_taken_seconds,
+       results.correct_answers,
+       results.wrong_answers
+   FROM results
+   JOIN user_profiles ON results.user_id = user_profiles.id
+   WHERE results.test_id = {testId}
+   AND results.test_type = 'daily_test'
+   LIMIT 100;
+
+DISPLAY:
+├─ Top 3 highlighted (gold, silver, bronze medals)
+├─ Rank card for each user:
+│  ├─ Rank number (1, 2, 3, ...)
+│  ├─ User name
+│  ├─ Score
+│  ├─ Time taken
+│  └─ Badge (your score highlighted if current user)
+│
+└─ Infinite scroll / pagination for more results
+
+4.5 SIDEBAR MENU
+─────────────────────────────────────────────────────────────────────────────
+
+MENU STRUCTURE:
+├─ Logo/Icon (top)
+├─ Menu Items:
+│  ├─ Home (icon + label)
+│  ├─ Share App (icon + label)
+│  ├─ Rate App (icon + label) [only if enabled in DB]
+│  ├─ ──────────── (divider)
+│  ├─ Privacy Policy (icon + label)
+│  ├─ About Us (icon + label)
+│  ├─ Terms & Conditions (icon + label)
+│  ├─ Disclaimer (icon + label)
+│  └─ Contact Us (icon + label)
+│
+└─ Bottom Section (optional)
+   ├─ App Version
+   └─ Logout Button
+
+INTERACTIONS:
+├─ Tap Menu Item → Navigate to route
+├─ Tap Share App → Native share dialog (app link)
+├─ Tap Rate App → Open app store (Google Play / App Store)
+├─ Tap Contact Us → Open contact form or mail client
+└─ Close Sidebar on item tap (mobile)
+
+DATA SOURCE:
+   SELECT * FROM site_settings;
+   All content from site_settings, not hardcoded
+
+================================================================================
+PART 5: ADVANCED REQUIREMENTS & IMPLEMENTATION DETAILS
+================================================================================
+
+5.1 ADMIN CONTROL SYSTEM (CMS)
+─────────────────────────────────────────────────────────────────────────────
+
+ADMIN PANEL REQUIRED FOR:
+├─ Categories Management
+│  ├─ Create, Read, Update, Delete
+│  ├─ Set icon, title, type, order
+│  ├─ Enable/disable
+│  └─ Bulk actions
+│
+├─ Course & Subject Management
+│  ├─ CRUD operations
+│  ├─ Set display order
+│  ├─ Manage images
+│  └─ Link to categories
+│
+├─ Question Management
+│  ├─ Batch upload (CSV/JSON)
+│  ├─ Edit question, options, explanation
+│  ├─ Set marks, negative marks, difficulty
+│  ├─ Preview before publish
+│  └─ Archive old questions
+│
+├─ Set Management
+│  ├─ Create/update sets
+│  ├─ Link questions (bulk or manual)
+│  ├─ Set unlock type (free/ad/premium)
+│  ├─ Schedule availability
+│  └─ Analytics (attempts, pass rate)
+│
+├─ Daily Test Management
+│  ├─ Create daily tests
+│  ├─ Schedule test date/time
+│  ├─ Set duration, language
+│  ├─ Link questions
+│  └─ View results & leaderboard
+│
+├─ Content Management (Syllabus, Previous Papers)
+│  ├─ Upload files (PDF, images)
+│  ├─ Add external links
+│  ├─ Manage badges
+│  └─ Set download permissions
+│
+├─ Notifications Management
+│  ├─ Create/send notifications
+│  ├─ Target by course, user group
+│  ├─ Schedule notifications
+│  ├─ View delivery status
+│  └─ Analytics
+│
+├─ Website Settings
+│  ├─ Update site name, meta tags
+│  ├─ Manage logo, favicon
+│  ├─ Contact info
+│  ├─ Menu items enable/disable
+│  └─ Feature toggles
+│
+├─ Ad Settings
+│  ├─ Google AdSense setup
+│  ├─ Ad placement configuration
+│  ├─ Manual ads management
+│  └─ Revenue tracking
+│
+└─ User Management
+   ├─ View user list
+   ├─ Filter by course, state
+   ├─ Ban/unban users
+   ├─ View user performance
+   └─ Send direct messages
+
+5.2 RESPONSIVE DESIGN RULES
+─────────────────────────────────────────────────────────────────────────────
+
+MOBILE (320px - 640px):
+├─ Header: Fixed, 56px height
+├─ Sidebar: Overlay modal (z-index: 1000)
+├─ Cards: Single column or 2-column grid (12px gap)
+├─ Bottom Navigation: Fixed at bottom, 4 items
+├─ Buttons: Full-width or max-width with margin
+├─ Text: 16px minimum for inputs (prevent zoom)
+├─ Tap Target: 44x44px minimum
+├─ Safe Area: Account for notch (top) and home indicator (bottom)
+└─ Icons: 24x24px
+
+TABLET (641px - 1024px):
+├─ Sidebar: Collapsible (48px width when minimized)
+├─ Cards: 2-3 column grid (16px gap)
+├─ Main Content: Max-width 800px, centered
+├─ Two-column layouts for forms
+├─ Desktop-like behavior but touch-optimized
+└─ Font sizes: 16-18px for body
+
+DESKTOP (1025px+):
+├─ Sidebar: Permanent left sidebar (240px width)
+├─ Main Content: Full width with max-width constraint (1200px)
+├─ Cards: 3-4 column grid (20px gap)
+├─ Multi-column layouts
+├─ Hover states (not available on touch)
+├─ Desktop navigation patterns
+└─ Font sizes: 16-20px
+
+BREAKPOINTS (CSS):
+   @media (max-width: 640px) { ... }      // Mobile
+   @media (min-width: 641px) and (max-width: 1024px) { ... }  // Tablet
+   @media (min-width: 1025px) { ... }     // Desktop
+
+RESPONSIVE IMAGES:
+├─ Use <picture> tag or srcSet
+├─ Load appropriate resolution for device
+├─ Lazy load images below fold
+├─ Use WebP format with fallback
+└─ Compress all images (tinypng, imagemin)
+
+5.3 PERFORMANCE OPTIMIZATION
+─────────────────────────────────────────────────────────────────────────────
+
+CODE SPLITTING:
+├─ Route-based code splitting (lazy load routes)
+├─ Component-based splitting (dynamic import)
+├─ Separate vendor bundles (React, libraries)
+└─ Tree shake unused code
+
+CACHING STRATEGY:
+├─ Service Worker: Cache app shell, offline support
+├─ HTTP Cache: Set proper cache headers
+├─ Browser Cache: Cache static assets (30 days)
+├─ Query Cache: Cache API responses (Zustand store)
+└─ IndexedDB: Store large datasets (questions, results)
+
+IMAGE OPTIMIZATION:
+├─ Next.js Image component (auto optimization)
+├─ WebP with fallback
+├─ Responsive images (srcSet)
+├─ Lazy loading for below-fold images
+├─ SVG for icons (not raster)
+└─ Compression: Target < 100KB for main images
+
+BUNDLE SIZE:
+├─ Target: < 200KB gzipped (JS)
+├─ Analyze: webpack-bundle-analyzer
+├─ Remove unused dependencies
+├─ Use lightweight alternatives (date-fns vs moment)
+└─ Dynamic imports for heavy libraries
+
+DATABASE OPTIMIZATION:
+├─ Indexes on frequently queried fields
+├─ Pagination (50-100 items per page)
+├─ Avoid N+1 queries
+├─ Preload related data (joins)
+├─ Limit returned columns
+└─ Archive old data periodically
+
+API OPTIMIZATION:
+├─ Pagination for list endpoints
+├─ Compression (gzip, brotli)
+├─ Rate limiting
+├─ CDN for static assets
+├─ API versioning (/v1/categories)
+└─ Response caching headers
+
+5.4 SECURITY CONSIDERATIONS
+─────────────────────────────────────────────────────────────────────────────
+
+AUTHENTICATION:
+├─ Use Supabase Auth (JWT tokens)
+├─ Secure refresh token rotation
+├─ HTTPS only (enforce)
+├─ Secure cookie flags (HttpOnly, Secure, SameSite)
+└─ Rate limit login attempts
+
+AUTHORIZATION:
+├─ Supabase Row-Level Security (RLS) policies
+├─ Admin role-based access
+├─ User can only access own data
+├─ Question answers server-side validation
+└─ No sensitive data in frontend
+
+DATA PROTECTION:
+├─ Encrypt sensitive data at rest
+├─ HTTPS for all communications
+├─ Sanitize inputs (XSS prevention)
+├─ SQL injection prevention (parameterized queries)
+├─ CSRF tokens for state-changing requests
+└─ Content Security Policy headers
+
+API SECURITY:
+├─ CORS policy (whitelist domains)
+├─ API key rotation
+├─ Rate limiting (per IP, per user)
+├─ Input validation (type, length, format)
+├─ Output encoding (prevent XSS)
+└─ Logging & monitoring
+
+PRIVACY:
+├─ GDPR compliant (EU users)
+├─ Privacy policy (updated)
+├─ Data deletion request handler
+├─ No third-party tracking (optional)
+├─ User consent for data collection
+└─ Terms of Service
+
+5.5 TESTING STRATEGY
+─────────────────────────────────────────────────────────────────────────────
+
+UNIT TESTS:
+├─ Test utility functions
+├─ Test reducers/store
+├─ Test API helpers
+├─ Test validation logic
+└─ Target: 80% coverage
+
+INTEGRATION TESTS:
+├─ Test API endpoints
+├─ Test database queries
+├─ Test auth flow
+├─ Test error handling
+└─ Run in staging environment
+
+COMPONENT TESTS:
+├─ Test component rendering
+├─ Test user interactions
+├─ Test props & state
+├─ Test edge cases
+└─ Use React Testing Library
+
+E2E TESTS:
+├─ Test complete user flows
+├─ Test MCQ quiz flow
+├─ Test result calculation
+├─ Test leaderboard
+├─ Use Cypress or Playwright
+└─ Run in staging before production
+
+PERFORMANCE TESTS:
+├─ Lighthouse CI
+├─ Bundle size monitoring
+├─ API response time
+├─ Database query performance
+└─ Load testing (k6, JMeter)
+
+5.6 DEPLOYMENT & DEVOPS
+─────────────────────────────────────────────────────────────────────────────
+
+VERSION CONTROL:
+├─ Git workflow (main, develop, feature branches)
+├─ Commit messages (conventional commits)
+├─ Code review (PR process)
+├─ Semantic versioning
+└─ Changelog maintenance
+
+CI/CD PIPELINE:
+├─ GitHub Actions / GitLab CI
+├─ Run tests on every push
+├─ Build artifact generation
+├─ Deploy to staging on develop
+├─ Deploy to production on main
+└─ Slack notifications
+
+DEPLOYMENT TARGETS:
+├─ Frontend: Vercel or Netlify
+├─ Backend: Railway, Render, or AWS
+├─ Database: Supabase (managed)
+├─ Storage: Supabase Storage or AWS S3
+└─ CDN: Cloudflare
+
+ENVIRONMENT MANAGEMENT:
+├─ .env.local (local development)
+├─ .env.staging (staging environment)
+├─ .env.production (production)
+├─ Never commit secrets
+├─ Use environment variable management
+└─ Rotate API keys regularly
+
+MONITORING & LOGGING:
+├─ Error tracking (Sentry)
+├─ Performance monitoring (Datadog, New Relic)
+├─ Log aggregation (ELK stack, Loggly)
+├─ Uptime monitoring
+├─ Alert system (Slack, PagerDuty)
+└─ User analytics (Google Analytics, Mixpanel)
+
+5.7 DOCUMENTATION
+─────────────────────────────────────────────────────────────────────────────
+
+REQUIRED DOCUMENTATION:
+├─ README.md (setup, run locally)
+├─ API.md (API endpoints, authentication)
+├─ DATABASE.md (schema, migrations)
+├─ ARCHITECTURE.md (system design, tech stack)
+├─ DEPLOYMENT.md (production setup)
+├─ CONTRIBUTING.md (dev guidelines)
+├─ TROUBLESHOOTING.md (common issues)
+└─ CHANGELOG.md (version history)
+
+CODE DOCUMENTATION:
+├─ JSDoc comments on functions
+├─ Component prop documentation
+├─ Type definitions (TypeScript)
+├─ Inline comments for complex logic
+└─ Examples for API usage
+
+================================================================================
+PART 6: DEVELOPMENT CHECKLIST
+================================================================================
+
+PHASE 1: SETUP & INFRASTRUCTURE
+─────────────────────────────────────────────────────────────────────────────
+
+□ Create Git repository (GitHub/GitLab)
+□ Setup project structure (src/, components/, pages/, etc.)
+□ Initialize Node.js project (package.json, npm/yarn)
+□ Setup Tailwind CSS configuration
+□ Configure TypeScript (tsconfig.json)
+□ Setup ESLint & Prettier
+□ Configure CI/CD pipeline (GitHub Actions)
+□ Create database schema in Supabase
+□ Setup environment variables (.env.example)
+□ Initialize Supabase project & get credentials
+
+PHASE 2: CORE COMPONENTS & LAYOUTS
+─────────────────────────────────────────────────────────────────────────────
+
+□ Create Header/TopBar component
+□ Create Sidebar/Menu component
+□ Create Bottom Navigation component
+□ Create Card component (generic, reusable)
+□ Create Button component (primary, secondary, icon variants)
+□ Create Modal/Dialog component
+□ Create Input/Form components
+□ Create Badge component
+□ Create Progress Bar component
+□ Create Question Navigator component
+□ Create Layout wrapper (header, sidebar, content, bottom nav)
+□ Style all components with Tailwind
+□ Test responsive behavior on all breakpoints
+
+PHASE 3: PAGES & ROUTING
+─────────────────────────────────────────────────────────────────────────────
+
+□ Setup routing (React Router or Next.js)
+□ Create Home page
+□ Create Category Detail page
+□ Create Course List page
+□ Create Subject List page
+□ Create Set List page (with language toggle)
+□ Create Quiz page (MCQ interface)
+□ Create Result page
+□ Create Daily Test Form page
+□ Create Daily Test page
+□ Create Leaderboard page
+□ Create Syllabus page
+□ Create Previous Papers page
+□ Create Mock Test page
+□ Create Notifications page
+□ Create Settings page
+□ Create 404 & Error pages
+□ Setup error boundary
+
+PHASE 4: DATA & API INTEGRATION
+─────────────────────────────────────────────────────────────────────────────
+
+□ Setup Supabase client (supabase-js)
+□ Create API service layer (API calls)
+□ Implement category fetching
+□ Implement course fetching
+□ Implement subject fetching
+□ Implement set fetching with language filter
+□ Implement question fetching
+□ Implement user profile management
+□ Implement result saving
+□ Implement leaderboard ranking
+□ Implement notification fetching
+□ Setup state management (Zustand/Context)
+□ Implement caching strategy
+□ Setup error handling & retry logic
+□ Implement loading states (skeleton loaders)
+
+PHASE 5: QUIZ & TEST LOGIC
+─────────────────────────────────────────────────────────────────────────────
+
+□ Implement quiz state management
+□ Implement question navigation
+□ Implement answer selection logic
+□ Implement timer/countdown logic
+□ Implement progress calculation
+□ Implement result calculation
+│  ├─ Correct answer count
+│  ├─ Wrong answer count
+│  ├─ Score calculation
+│  ├─ Percentage calculation
+│  └─ Rank calculation
+□ Implement explanation display
+□ Implement question review functionality
+□ Implement auto-submit on timeout
+□ Implement resume quiz functionality (save state)
+□ Test all edge cases
+
+PHASE 6: ADMIN PANEL (BACKEND)
+─────────────────────────────────────────────────────────────────────────────
+
+□ Create admin authentication (login)
+□ Create category management CRUD
+□ Create course management CRUD
+□ Create subject management CRUD
+□ Create question management CRUD
+│  ├─ Bulk upload (CSV)
+│  ├─ Edit interface
+│  ├─ Preview
+│  └─ Publish/Archive
+□ Create set management CRUD
+□ Create daily test management CRUD
+□ Create content management (Syllabus, Papers)
+□ Create notification management
+□ Create settings management
+□ Create user management
+□ Create analytics dashboard
+□ Implement file upload (PDFs, images)
+□ Implement validation & error handling
+□ Setup database migrations
+□ Test all CRUD operations
+
+PHASE 7: AD & MONETIZATION
+─────────────────────────────────────────────────────────────────────────────
+
+□ Setup Google AdSense account
+□ Configure ad units
+□ Implement ad placement logic
+□ Create unlock dialog component
+□ Implement ad-based unlock flow
+│  ├─ Play ad
+│  ├─ Track completion
+│  ├─ Mark content as unlocked
+│  └─ Persist in user session/DB
+□ Setup rewarded ad callbacks
+□ Implement ad analytics
+□ Test ad serving & impression tracking
+
+PHASE 8: AUTHENTICATION & SECURITY
+─────────────────────────────────────────────────────────────────────────────
+
+□ Setup Supabase Auth
+□ Implement user registration
+□ Implement user login
+□ Implement JWT token management
+□ Implement refresh token rotation
+□ Implement logout functionality
+□ Setup RLS policies on database
+□ Implement role-based access control
+□ Setup CORS policy
+□ Implement input validation & sanitization
+□ Setup HTTPS & security headers
+□ Implement rate limiting
+□ Test authentication flows
+
+PHASE 9: TESTING & QA
+─────────────────────────────────────────────────────────────────────────────
+
+□ Write unit tests (80% coverage)
+□ Write integration tests
+□ Write component tests
+□ Write E2E tests (critical flows)
+□ Performance testing (Lighthouse)
+□ Load testing (concurrent users)
+□ Cross-browser testing (Chrome, Safari, Firefox)
+□ Mobile device testing (iOS & Android)
+□ Accessibility testing (WCAG compliance)
+□ Security testing (OWASP top 10)
+□ User acceptance testing (UAT)
+
+PHASE 10: DEPLOYMENT & LAUNCH
+─────────────────────────────────────────────────────────────────────────────
+
+□ Setup production environment
+□ Configure database backups
+□ Setup monitoring & alerting
+□ Setup error tracking (Sentry)
+□ Configure CDN & caching
+□ Setup SSL certificate
+□ Create documentation
+□ Create deployment guide
+□ Setup support channels
+□ Plan rollout strategy
+□ Prepare marketing materials
+□ Launch to beta users (if applicable)
+□ Gather feedback & iterate
+□ Full production launch
+□ Post-launch monitoring
+
+================================================================================
+PART 7: KEY TECHNICAL DECISIONS & JUSTIFICATIONS
+================================================================================
+
+CHOICE 1: React over Vue/Angular
+─────────────────────────────────────────────────────────────────────────────
+REASON:
+├─ Larger ecosystem & community support
+├─ Better for mobile-first design
+├─ Easier integration with native (React Native)
+├─ More job market availability
+└─ Excellent documentation
+
+CHOICE 2: Supabase over Firebase
+─────────────────────────────────────────────────────────────────────────────
+REASON:
+├─ PostgreSQL (powerful, relational)
+├─ Better for complex queries
+├─ Row-Level Security (built-in)
+├─ Cost-effective at scale
+├─ Open source (self-hostable option)
+├─ Better control over data
+└─ SQL knowledge transferable
+
+CHOICE 3: Tailwind CSS over Material-UI
+─────────────────────────────────────────────────────────────────────────────
+REASON:
+├─ Utility-first approach (faster development)
+├─ Smaller bundle size
+├─ Better customization control
+├─ Easier responsive design
+├─ No component bloat
+└─ Modern design system approach
+
+CHOICE 4: Mobile-First Design
+─────────────────────────────────────────────────────────────────────────────
+REASON:
+├─ 80%+ users will be mobile
+├─ Simpler to scale up than down
+├─ Better performance on mobile
+├─ Touch-friendly from start
+├─ Progressive enhancement approach
+└─ Lower bounce rate
+
+================================================================================
+PART 8: ESTIMATED TIMELINE & RESOURCE ALLOCATION
+================================================================================
+
+TOTAL PROJECT DURATION: 20-24 weeks
+TEAM SIZE: 5-7 developers (1 lead, 3 full-stack, 1-2 QA, 1 DevOps)
+
+WEEKLY ALLOCATION:
+├─ Week 1-2: Setup & Infrastructure (40 hours)
+├─ Week 3-5: Core Components & Layouts (80 hours)
+├─ Week 6-8: Pages & Routing (80 hours)
+├─ Week 9-11: Data & API Integration (100 hours)
+├─ Week 12-13: Quiz Logic (60 hours)
+├─ Week 14-16: Admin Panel (120 hours)
+├─ Week 17: Ad & Monetization (40 hours)
+├─ Week 18: Auth & Security (40 hours)
+├─ Week 19-20: Testing & QA (100 hours)
+├─ Week 21-22: Deployment & Launch (60 hours)
+├─ Week 23-24: Buffer & Post-Launch Fixes (80 hours)
+└─ TOTAL: ~840 hours
+
+BUDGET ESTIMATE:
+├─ Development: ~$30,000-40,000 (depending on location)
+├─ Testing/QA: ~$5,000-8,000
+├─ Deployment/DevOps: ~$3,000-5,000
+├─ Tools & Services: ~$2,000-3,000 (per year)
+│  ├─ Supabase: $500-1,500/year
+│  ├─ Vercel/Railway: $500-2,000/year
+│  ├─ Monitoring: $500-1,500/year
+│  └─ Other tools: $500/year
+└─ TOTAL: ~$40,000-60,000
+
+================================================================================
+END OF DETAILED SENIOR DEVELOPER PROMPT
+================================================================================
+
+FINAL NOTES FOR TEAM:
+─────────────────────────────────────────────────────────────────────────────
+
+1. NO HARDCODING ANYWHERE
+   Every piece of data should come from the database. Use admin panel for
+   content management. Even app name, logo, menu items from DB.
+
+2. FULLY ADMIN-CONTROLLED
+   Admin should be able to add/edit/delete everything without code changes.
+   Categories, courses, questions, notifications, settings - all from CMS.
+
+3. SCALABILITY FIRST
+   Design with 100,000+ users in mind. Use pagination, indexing, caching
+   from day one. Don't optimize later - build right.
+
+4. RESPONSIVENESS EVERYWHERE
+   Test on: iPhone SE (375px), iPhone 12 (390px), iPad (768px), 
+   iPhone 12 Pro Max (430px), Desktop (1920px). Every layout must work.
+
+5. USER EXPERIENCE OBSESSION
+   Smooth animations, instant feedback, fast loading, minimal data usage.
+   Every millisecond matters on mobile. Profile real users, optimize based
+   on data.
+
+6. SECURITY FIRST
+   RLS policies on every table, validate on server, encrypt sensitive data,
+   HTTPS only. No user can access others' data.
+
+7. MAINTAINABILITY
+   Write clean code, document well, test thoroughly. Future developers
+   should understand your code in 5 minutes.
+
+8. MONITORING
+   Setup error tracking day one. Monitor performance, errors, user behavior.
+   Fix issues fast.
+
+9. MOBILE APP VARIANT
+   Design with native app in mind (React Native). Reuse API, business logic.
+   Web and app should feel identical.
+
+10. ITERATE FAST
+    Ship MVP in 12 weeks, get user feedback, iterate. Don't wait for
+    perfection. Real feedback > assumptions.
+
+Good luck! This is a complex system, but if built right, it'll serve thousands
+of students and educators. Quality matters. Speed matters. User satisfaction
+matters most.
+
+================================================================================
