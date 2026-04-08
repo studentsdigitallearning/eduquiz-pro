@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
+import { toCamelCase } from '@/lib/utils';
 
 // POST: Save a test result
 export async function POST(request: Request) {
@@ -29,54 +31,74 @@ export async function POST(request: Request) {
       );
     }
 
-    // Upsert user profile if not exists
-    await db.userProfile.upsert({
-      where: { id: userId },
-      update: {
-        totalTestsTaken: { increment: 1 },
-        totalScore: { increment: totalScore || 0 },
-      },
-      create: {
-        id: userId,
-        totalTestsTaken: 1,
-        totalScore: totalScore || 0,
-      },
-    });
-
-    // Calculate rank among results for this test
-    const existingResults = await db.result.findMany({
-      where: { testId, testType, status: 'completed' },
-      orderBy: { totalScore: 'desc' },
-      select: { totalScore: true },
-    });
-
-    let rank = 1;
     const newScore = totalScore || 0;
-    for (const r of existingResults) {
-      if (r.totalScore > newScore) rank++;
+
+    // Upsert user profile: check if exists first
+    const { data: existingProfile } = await supabaseAdmin
+      .from('user_profiles')
+      .select('id, total_tests_taken, total_score')
+      .eq('id', userId)
+      .single();
+
+    if (existingProfile) {
+      // Update existing profile with incremented stats
+      await supabaseAdmin
+        .from('user_profiles')
+        .update({
+          total_tests_taken: (existingProfile.total_tests_taken || 0) + 1,
+          total_score: (existingProfile.total_score || 0) + newScore,
+        })
+        .eq('id', userId);
+    } else {
+      // Create new profile
+      await supabaseAdmin.from('user_profiles').insert({
+        id: userId,
+        total_tests_taken: 1,
+        total_score: newScore,
+      });
     }
 
-    const result = await db.result.create({
-      data: {
-        userId,
-        testId,
-        testType,
-        courseId,
-        totalQuestions,
-        correctAnswers: correctAnswers || 0,
-        wrongAnswers: wrongAnswers || 0,
-        skippedAnswers: skippedAnswers || 0,
-        totalScore: newScore,
-        percentage: percentage || 0,
-        timeTakenSeconds: timeTakenSeconds || 0,
-        rank,
-        attemptNumber: attemptNumber || 1,
-        status: status || 'completed',
-        testDate: testDate ? new Date(testDate) : new Date(),
-      },
+    // Calculate rank among existing completed results for this test
+    const { data: existingResults } = await supabase
+      .from('results')
+      .select('total_score')
+      .eq('test_id', testId)
+      .eq('test_type', testType)
+      .eq('status', 'completed');
+
+    let rank = 1;
+    existingResults?.forEach((r) => {
+      if (r.total_score > newScore) rank++;
     });
 
-    return NextResponse.json(result, { status: 201 });
+    // Insert the result
+    const { data: result, error } = await supabaseAdmin
+      .from('results')
+      .insert({
+        user_id: userId,
+        test_id: testId,
+        test_type: testType,
+        course_id: courseId,
+        total_questions: totalQuestions || 0,
+        correct_answers: correctAnswers || 0,
+        wrong_answers: wrongAnswers || 0,
+        skipped_answers: skippedAnswers || 0,
+        total_score: newScore,
+        percentage: percentage || 0,
+        time_taken_seconds: timeTakenSeconds || 0,
+        rank,
+        attempt_number: attemptNumber || 1,
+        status: status || 'completed',
+        test_date: testDate ? new Date(testDate).toISOString() : new Date().toISOString(),
+      })
+      .select()
+      .single();
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json(toCamelCase(result), { status: 201 });
   } catch (error) {
     console.error('Error saving result:', error);
     return NextResponse.json({ error: 'Failed to save result' }, { status: 500 });
@@ -98,30 +120,38 @@ export async function GET(request: Request) {
       );
     }
 
-    const where: Record<string, unknown> = {
-      testId,
-      testType,
-      status: 'completed',
-    };
+    // Join with user_profiles to get user name and email
+    let query = supabase
+      .from('results')
+      .select('*, user_profile:user_profiles(id, full_name, email)')
+      .eq('test_id', testId)
+      .eq('test_type', testType)
+      .eq('status', 'completed')
+      .order('total_score', { ascending: false })
+      .order('time_taken_seconds', { ascending: true })
+      .limit(100);
+
     if (courseId) {
-      where.courseId = courseId;
+      query = query.eq('course_id', courseId);
     }
 
-    const results = await db.result.findMany({
-      where,
-      orderBy: [
-        { totalScore: 'desc' },
-        { timeTakenSeconds: 'asc' },
-      ],
-      take: 100,
-      include: {
-        userProfile: {
-          select: { id: true, fullName: true, email: true },
-        },
-      },
+    const { data, error } = await query;
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    // Transform: user_profile may be an array or object, normalize to single object
+    const result = toCamelCase(data).map((item: Record<string, unknown>) => {
+      const rawProfile = (item as Record<string, unknown>).userProfile;
+      const profile = Array.isArray(rawProfile) ? rawProfile[0] : rawProfile;
+      return {
+        ...item,
+        userProfile: profile || null,
+      };
     });
 
-    return NextResponse.json(results);
+    return NextResponse.json(result);
   } catch (error) {
     console.error('Error fetching results:', error);
     return NextResponse.json({ error: 'Failed to fetch results' }, { status: 500 });

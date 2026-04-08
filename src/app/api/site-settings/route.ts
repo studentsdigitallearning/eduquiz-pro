@@ -1,11 +1,16 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { supabase } from '@/lib/supabase';
+import { toCamelCase } from '@/lib/utils';
 
 export async function GET() {
   try {
-    const settings = await db.siteSettings.findFirst();
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('*')
+      .limit(1)
+      .single();
 
-    if (!settings) {
+    if (error || !data) {
       // Return defaults if no settings exist yet
       return NextResponse.json({
         siteName: 'EduQuiz Pro',
@@ -21,7 +26,7 @@ export async function GET() {
       });
     }
 
-    return NextResponse.json(settings);
+    return NextResponse.json(toCamelCase(data));
   } catch (error) {
     console.error('Error fetching site settings:', error);
     return NextResponse.json({ error: 'Failed to fetch site settings' }, { status: 500 });

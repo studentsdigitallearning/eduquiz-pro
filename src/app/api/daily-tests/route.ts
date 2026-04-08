@@ -1,27 +1,44 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { supabase } from '@/lib/supabase';
+import { toCamelCase } from '@/lib/utils';
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const courseId = searchParams.get('courseId');
 
-    const where: Record<string, unknown> = { isActive: true };
+    let query = supabase
+      .from('daily_tests')
+      .select('*')
+      .eq('is_active', true)
+      .order('test_date', { ascending: false });
+
     if (courseId) {
-      where.courseId = courseId;
+      query = query.eq('course_id', courseId);
     }
 
-    const dailyTests = await db.dailyTest.findMany({
-      where,
-      orderBy: { testDate: 'desc' },
-      include: {
-        _count: {
-          select: { questions: true },
-        },
-      },
+    const { data, error } = await query;
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    // Fetch question counts per daily test
+    const { data: questionRefs } = await supabase
+      .from('daily_questions')
+      .select('test_id');
+
+    const questionCounts = new Map<string, number>();
+    questionRefs?.forEach((q) => {
+      questionCounts.set(q.test_id, (questionCounts.get(q.test_id) ?? 0) + 1);
     });
 
-    return NextResponse.json(dailyTests);
+    const result = toCamelCase(data).map((test: Record<string, unknown>) => ({
+      ...test,
+      _count: { questions: questionCounts.get(test.id as string) ?? 0 },
+    }));
+
+    return NextResponse.json(result);
   } catch (error) {
     console.error('Error fetching daily tests:', error);
     return NextResponse.json({ error: 'Failed to fetch daily tests' }, { status: 500 });

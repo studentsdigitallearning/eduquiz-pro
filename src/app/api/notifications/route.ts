@@ -1,23 +1,23 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { supabase } from '@/lib/supabase';
+import { toCamelCase } from '@/lib/utils';
 
 export async function GET() {
   try {
-    const notifications = await db.notification.findMany({
-      where: {
-        isActive: true,
-        OR: [
-          { expiryDate: null },
-          { expiryDate: { gte: new Date() } },
-        ],
-      },
-      orderBy: [
-        { priority: 'desc' },
-        { publishedDate: 'desc' },
-      ],
-    });
+    // Fetch active notifications where expiry is null or in the future
+    const { data, error } = await supabase
+      .from('notifications')
+      .select('*')
+      .eq('is_active', true)
+      .or('expiry_date.is.null,expiry_date.gte.' + new Date().toISOString())
+      .order('priority', { ascending: false })
+      .order('published_date', { ascending: false });
 
-    return NextResponse.json(notifications);
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json(toCamelCase(data));
   } catch (error) {
     console.error('Error fetching notifications:', error);
     return NextResponse.json({ error: 'Failed to fetch notifications' }, { status: 500 });

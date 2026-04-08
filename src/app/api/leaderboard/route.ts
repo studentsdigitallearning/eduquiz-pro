@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { supabase } from '@/lib/supabase';
+import { toCamelCase } from '@/lib/utils';
 
 export async function GET(request: Request) {
   try {
@@ -8,31 +9,34 @@ export async function GET(request: Request) {
     const testType = searchParams.get('testType');
     const courseId = searchParams.get('courseId');
 
-    const where: Record<string, unknown> = { status: 'completed' };
+    let query = supabase
+      .from('results')
+      .select('*, user_profile:user_profiles(id, full_name, email, state)')
+      .eq('status', 'completed')
+      .order('total_score', { ascending: false })
+      .order('time_taken_seconds', { ascending: true })
+      .limit(50);
 
-    if (testId) where.testId = testId;
-    if (testType) where.testType = testType;
-    if (courseId) where.courseId = courseId;
+    if (testId) query = query.eq('test_id', testId);
+    if (testType) query = query.eq('test_type', testType);
+    if (courseId) query = query.eq('course_id', courseId);
 
-    const results = await db.result.findMany({
-      where,
-      orderBy: [
-        { totalScore: 'desc' },
-        { timeTakenSeconds: 'asc' },
-      ],
-      take: 50,
-      include: {
-        userProfile: {
-          select: { id: true, fullName: true, email: true, state: true },
-        },
-      },
+    const { data, error } = await query;
+
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    // Add rank based on position and normalize user_profile
+    const leaderboard = toCamelCase(data).map((result: Record<string, unknown>, index: number) => {
+      const rawProfile = (result as Record<string, unknown>).userProfile;
+      const profile = Array.isArray(rawProfile) ? rawProfile[0] : rawProfile;
+      return {
+        ...result,
+        userProfile: profile || null,
+        rank: index + 1,
+      };
     });
-
-    // Add rank based on position in sorted results
-    const leaderboard = results.map((result, index) => ({
-      ...result,
-      rank: index + 1,
-    }));
 
     return NextResponse.json(leaderboard);
   } catch (error) {

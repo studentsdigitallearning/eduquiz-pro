@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { supabase } from '@/lib/supabase';
+import { toCamelCase } from '@/lib/utils';
 
 export async function GET(request: Request) {
   try {
@@ -13,15 +14,18 @@ export async function GET(request: Request) {
       );
     }
 
-    const questions = await db.question.findMany({
-      where: {
-        setId,
-        isActive: true,
-      },
-      orderBy: { displayOrder: 'asc' },
-    });
+    const { data, error } = await supabase
+      .from('questions')
+      .select('*')
+      .eq('set_id', setId)
+      .eq('is_active', true)
+      .order('display_order', { ascending: true });
 
-    return NextResponse.json(questions);
+    if (error) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    return NextResponse.json(toCamelCase(data));
   } catch (error) {
     console.error('Error fetching questions:', error);
     return NextResponse.json({ error: 'Failed to fetch questions' }, { status: 500 });

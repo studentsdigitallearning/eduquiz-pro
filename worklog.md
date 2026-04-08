@@ -83,3 +83,44 @@ Stage Summary:
 - Complete quiz engine with timer, scoring, result calculation, and API result submission
 - Mobile-first responsive design with proper safe area handling
 - Zero lint errors, clean compilation
+
+---
+Task ID: 5
+Agent: full-stack-developer
+Task: Migrate all API routes from Prisma to Supabase
+
+Work Log:
+- Added `toCamelCase` and `toSnakeCase` utility functions to `src/lib/utils.ts` for converting between snake_case (Supabase) and camelCase (frontend/Prisma format)
+- Migrated 18 API route files from Prisma to Supabase JS v2 client:
+  1. `src/app/api/categories/route.ts` - Replaced Prisma `findMany` with Supabase `select('*')` + separate count query for `_count.courses`
+  2. `src/app/api/categories/[id]/route.ts` - Replaced Prisma `findUnique` with Supabase `single()` + separate courses query
+  3. `src/app/api/courses/route.ts` - Replaced Prisma query with Supabase + parallel count queries for subjects/syllabus/dailyTests/mockTests
+  4. `src/app/api/subjects/route.ts` - Replaced Prisma with Supabase + count query for `_count.sets`
+  5. `src/app/api/sets/route.ts` - Replaced Prisma with Supabase + count query for `_count.questions`
+  6. `src/app/api/questions/route.ts` - Simple Supabase select by set_id
+  7. `src/app/api/daily-tests/route.ts` - Supabase select with optional courseId filter + count query
+  8. `src/app/api/daily-tests/[id]/route.ts` - Supabase single + join queries for questions and course
+  9. `src/app/api/mock-tests/route.ts` - Supabase select with optional courseId filter + count query
+  10. `src/app/api/mock-tests/[id]/route.ts` - Supabase single + join queries for questions and course
+  11. `src/app/api/syllabus/route.ts` - Simple Supabase select by course_id
+  12. `src/app/api/previous-papers/route.ts` - Supabase select with PostgREST join for subjects
+  13. `src/app/api/updates/route.ts` - 3-level join using separate queries: sections → items → buttons, assembled in JS
+  14. `src/app/api/notifications/route.ts` - Supabase select with `.or()` for expiry_date null/gte filter
+  15. `src/app/api/results/route.ts` - POST uses supabaseAdmin for insert + user profile upsert; GET uses supabase with user_profiles join
+  16. `src/app/api/user-profiles/route.ts` - POST uses supabaseAdmin for create-or-update pattern
+  17. `src/app/api/site-settings/route.ts` - Supabase `single()` with default fallback
+  18. `src/app/api/leaderboard/route.ts` - Supabase select with user_profiles join + client-side rank assignment
+- All read operations use `supabase` (anon client with RLS)
+- All write operations (POST) use `supabaseAdmin` (service_role, bypasses RLS)
+- All responses converted from snake_case to camelCase via `toCamelCase()` to maintain Prisma-compatible JSON format
+- `_count` fields preserved via separate count queries merged in JS
+- Foreign key joins handled via PostgREST embedded select syntax (`user_profile:user_profiles(...)`, `subject:subjects(...)`)
+- `src/app/api/route.ts` (hello world) left unchanged as it has no database usage
+
+Stage Summary:
+- All 18 API routes now use Supabase as primary database instead of Prisma/SQLite
+- Read operations use anon client with RLS policies
+- Write operations use service_role admin client (bypasses RLS)
+- Leaderboard query uses PostgREST join with user_profiles table
+- Response format maintained as camelCase JSON matching original Prisma output
+- Zero lint errors, clean compilation
