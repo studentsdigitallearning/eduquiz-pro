@@ -36,6 +36,14 @@ yarn-error.log*
 # vercel
 .vercel
 
+# database
+db/*.db
+db/*.db-journal
+
+# upload & worklog
+/upload/
+/worklog/
+
 
 # typescript
 *.tsbuildinfo
